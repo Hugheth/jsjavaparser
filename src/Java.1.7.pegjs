@@ -1061,7 +1061,7 @@ Expression
     / ConditionalExpression
 
 LambdaExpression
-    = params:LambdaParameters '->' body:LambdaBody
+    = params:LambdaParameters LAMBDA body:LambdaBody
     {
       return {
         node: 'LambdaExpression',
@@ -1083,8 +1083,8 @@ LambdaParameters
     {
       return [id]
     }
-    / '(' params:FormalParameterList? ')'
-    / '(' InferredFormalParameterList ')'
+    / LPAR params:FormalParameterList? RPAR
+    / LPAR InferredFormalParameterList RPAR
 
 InferredFormalParameterList
     = first:Identifier tail:(',' Identifier)*
@@ -1954,6 +1954,7 @@ GT              =   ">"![=>]  Spacing
 HAT             =   "^"!"="   Spacing
 HATEQU          =   "^="      Spacing
 INC             =   "++"      Spacing
+LAMBDA          =   "->"      Spacing
 LBRK            =   "["       Spacing
 LE              =   "<="      Spacing
 LPAR            =   "("       Spacing
