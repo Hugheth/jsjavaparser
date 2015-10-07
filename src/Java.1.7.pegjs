@@ -1048,7 +1048,8 @@ ConstantExpression
     = Expression
 
 Expression
-    = left:ConditionalExpression op:AssignmentOperator right:Expression
+    = LambdaExpression
+    / left:ConditionalExpression op:AssignmentOperator right:Expression
     {
       return {
         node:         'Assignment',
@@ -1059,12 +1060,41 @@ Expression
     } 
     / ConditionalExpression
 
+LambdaExpression
+    = params:LambdaParameters '->' body:LambdaBody
+    {
+      return {
+        node: 'LambdaExpression',
+        parameters: params,
+        body: body
+      }
+
+    }
+
     // This definition is part of the modification in JLS Chapter 18
     // to minimize look ahead. In JLS Chapter 15.27, Expression is defined
     // as AssignmentExpression, which is effectively defined as
     // (LeftHandSide AssignmentOperator)* ConditionalExpression.
     // The above is obtained by allowing ANY ConditionalExpression
     // as LeftHandSide, which results in accepting statements like 5 = a.
+
+LambdaParameters
+    = id: Identifier
+    {
+      return [id]
+    }
+    / '(' params:FormalParameterList? ')'
+    / '(' InferredFormalParameterList ')'
+
+InferredFormalParameterList
+    = first:Identifier tail:(',' Identifier)*
+    {
+       return [first].concat(tail.map(function( arr ) { return arr[1]}));
+    }
+
+LambdaBody
+    = Expression
+    / Block
 
 AssignmentOperator
     = EQU
@@ -1688,7 +1718,8 @@ ElementValues
 
 Spacing
     = ( [ \t\r\n\u000C]+          // WhiteSpace
-      / "/*" (!"*/" _)* "*/"      // TraditionalComment
+      / "/*" (!"*/" _)* "*/"      // Traditional
+
       / "//" (![\r\n] _)* [\r\n]  // EndOfLineComment
       )* ;
 
