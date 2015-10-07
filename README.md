@@ -1,4 +1,10 @@
-# JavaScript Java Parser [![Build Status](https://travis-ci.org/mazko/jsjavaparser.svg?branch=master)](https://travis-ci.org/mazko/jsjavaparser)
+# JavaScript Java Parser
+
+A fork of Mazko's jsjavaparser https://github.com/mazko/jsjavaparser to support lambda expressions, following the Java 1.8 Grammar.
+
+# Mazko's original:
+
+- [Github] https://github.com/mazko/jsjavaparser
 
 - [Online Demo](http://mazko.github.io/jsjavaparser)
 
