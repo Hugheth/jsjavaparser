@@ -1084,6 +1084,9 @@ LambdaParameters
       return [id]
     }
     / LPAR params:FormalParameterList? RPAR
+    {
+      return params
+    }
     / LPAR InferredFormalParameterList RPAR
 
 InferredFormalParameterList
