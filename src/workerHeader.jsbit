@@ -1,0 +1,7 @@
+'use strict';
+
+onmessage = function( message ) {
+
+	var code = message.data;
+
+	
