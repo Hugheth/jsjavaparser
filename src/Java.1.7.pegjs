@@ -372,6 +372,47 @@
     return obj;
   }
 
+  var keywordMap = {
+    assert: true,
+    break: true,
+    case: true,
+    catch: true,
+    class: true,
+    continue: true,
+    default: true,
+    do: true,
+    else: true,
+    enum: true,
+    extends: true,
+    finally: true,
+    final: true,
+    for: true,
+    if: true,
+    implements: true,
+    import: true,
+    interface: true,
+    instanceof: true,
+    new: true,
+    package: true,
+    return: true,
+    static: true,
+    super: true,
+    switch: true,
+    synchronized: true,
+    this: true,
+    throws: true,
+    throw: true,
+    try: true,
+    void: true,
+    while: true
+  };
+
+  function isKeyword( word ) {
+
+    return keywordMap[word];
+
+  }
+
   function buildSelectorTree(arg, sel, sels) {
     function getMergeVal(o,v) {
       switch(o.node){
@@ -1704,7 +1745,7 @@ Spacing
 
 Identifier
     = !Keyword id:([a-zA-Z_$][a-zA-Z0-9_$]*) Spacing
-    { return { identifier: id, node: 'SimpleName' }; }
+    { return { identifier: id[0] + id[1].join(''), node: 'SimpleName' }; }
 
 Letter = [a-zA-Z_$] ;
 
@@ -1725,16 +1766,10 @@ LetterOrDigit = [a-zA-Z0-9_$] ;
 
 Keyword
 
-    = output:Letter+ !LetterOrDigit & {
+    = output:Letter+ & {
 
         var name = output.join('');
-        if (name !== 'package') {
-
-          return;
-
-        }
-
-        return true;
+        return isKeyword(name);
 
     }
 
