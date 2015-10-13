@@ -1061,43 +1061,15 @@ Expression
     / ConditionalExpression
 
 LambdaExpression
-    = params:LambdaParameters LAMBDA body:LambdaBody
+    = '()' LAMBDA body:Block
     {
       return {
         node: 'LambdaExpression',
-        parameters: params,
+        parameters: [],
         body: body
       }
 
     }
-
-    // This definition is part of the modification in JLS Chapter 18
-    // to minimize look ahead. In JLS Chapter 15.27, Expression is defined
-    // as AssignmentExpression, which is effectively defined as
-    // (LeftHandSide AssignmentOperator)* ConditionalExpression.
-    // The above is obtained by allowing ANY ConditionalExpression
-    // as LeftHandSide, which results in accepting statements like 5 = a.
-
-LambdaParameters
-    = id: Identifier
-    {
-      return [id]
-    }
-    / LPAR params:FormalParameterList? RPAR
-    {
-      return params
-    }
-    / LPAR InferredFormalParameterList RPAR
-
-InferredFormalParameterList
-    = first:Identifier tail:(',' Identifier)*
-    {
-       return [first].concat(tail.map(function( arr ) { return arr[1]}));
-    }
-
-LambdaBody
-    = Expression
-    / Block
 
 AssignmentOperator
     = EQU
@@ -1731,12 +1703,12 @@ Spacing
 //-------------------------------------------------------------------------
 
 Identifier
-    = !Keyword first:Letter rest:$LetterOrDigit* Spacing
-    { return { identifier: first + rest, node: 'SimpleName' }; }
+    = !Keyword id:([a-zA-Z_$][a-zA-Z0-9_$]*) Spacing
+    { return { identifier: id, node: 'SimpleName' }; }
 
-Letter = [a-z] / [A-Z] / [_$] ;
+Letter = [a-zA-Z_$] ;
 
-LetterOrDigit = [a-z] / [A-Z] / [0-9] / [_$] ;
+LetterOrDigit = [a-zA-Z0-9_$] ;
 
     // These are traditional definitions of letters and digits.
     // JLS defines letters and digits as Unicode characters recognized
@@ -1753,60 +1725,18 @@ LetterOrDigit = [a-z] / [A-Z] / [0-9] / [_$] ;
 
 Keyword
 
-    = ( "abstract"
-      / "assert"
-      / "boolean"
-      / "break"
-      / "byte"
-      / "case"
-      / "catch"
-      / "char"
-      / "class"
-      / "const"
-      / "continue"
-      / "default"
-      / "double"
-      / "do"
-      / "else"
-      / "enum"
-      / "extends"
-      / "false"
-      / "finally"
-      / "final"
-      / "float"
-      / "for"
-      / "goto"
-      / "if"
-      / "implements"
-      / "import"
-      / "interface"
-      / "int"
-      / "instanceof"
-      / "long"
-      / "native"
-      / "new"
-      / "null"
-      / "package"
-      / "private"
-      / "protected"
-      / "public"
-      / "return"
-      / "short"
-      / "static"
-      / "strictfp"
-      / "super"
-      / "switch"
-      / "synchronized"
-      / "this"
-      / "throws"
-      / "throw"
-      / "transient"
-      / "true"
-      / "try"
-      / "void"
-      / "volatile"
-      / "while"
-      ) !LetterOrDigit
+    = output:Letter+ !LetterOrDigit & {
+
+        var name = output.join('');
+        if (name !== 'package') {
+
+          return;
+
+        }
+
+        return true;
+
+    }
 
 ASSERT       = "assert"       !LetterOrDigit Spacing 
 BREAK        = "break"        !LetterOrDigit Spacing 
