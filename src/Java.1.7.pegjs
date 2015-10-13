@@ -1061,7 +1061,7 @@ Expression
     / ConditionalExpression
 
 LambdaExpression
-    = '()' SPACING LAMBDA body:Block
+    = '()' Spacing LAMBDA body:Block
     {
       return {
         node: 'LambdaExpression',
