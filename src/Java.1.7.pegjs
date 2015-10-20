@@ -487,7 +487,7 @@ TypeDeclaration
         / InterfaceDeclaration
         / AnnotationTypeDeclaration
       )
-      { return mergeProps(type, { modifiers: modifiers }); }
+      { return mergeProps(type, { modifiers: modifiers, location: location() }); }
       / SEMI
       { return null; }
 
@@ -533,7 +533,8 @@ MemberDecl
     { 
       return mergeProps(rest, {
         node:          'MethodDeclaration',
-        typeParameters: params
+        typeParameters: params,
+        location: location()
       });
     }
     / type:Type id:Identifier 
@@ -543,7 +544,8 @@ MemberDecl
         node:          'MethodDeclaration',
         returnType2:    type,
         name:           id,
-        typeParameters: []
+        typeParameters: [],
+        location: location()
       });
     }
     / type:Type decls:VariableDeclarators SEMI         // Field
@@ -560,7 +562,8 @@ MemberDecl
         node:       'MethodDeclaration',
         returnType2: makePrimitive('void'),
         name:        id,
-        constructor: false
+        constructor: false,
+        location: location()
       });
     }
     / id:Identifier rest:ConstructorDeclaratorRest     // Constructor
@@ -568,7 +571,8 @@ MemberDecl
       return mergeProps(rest, {
         node:           'MethodDeclaration',
         name:            id,
-        typeParameters:  []
+        typeParameters:  [],
+        location: location()
       });
     }
     / InterfaceDeclaration                             // Interface
@@ -699,7 +703,8 @@ InterfaceMethodDeclaratorRest
         thrownExceptions: extractThrowsClassType(extractOptionalList(throws, 1)),
         extraDimensions:  dims.length,
         body:             null,
-        constructor:      false
+        constructor:      false,
+        location: location()
       };
     }
 
@@ -724,7 +729,8 @@ VoidInterfaceMethodDeclaratorRest
         extraDimensions:  0,
         typeParameters:   [],
         body:             null,
-        constructor:      false
+        constructor:      false,
+        location: location()
       };
     }
 
