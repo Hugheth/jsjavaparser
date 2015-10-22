@@ -553,7 +553,8 @@ MemberDecl
       return {
         node:     'FieldDeclaration',
         fragments: decls,
-        type:      type
+        type:      type,
+        location: location()
       };
     }
     / VOID id:Identifier rest:VoidMethodDeclaratorRest // Void method
@@ -691,7 +692,7 @@ InterfaceMethodOrFieldDecl
 
 InterfaceMethodOrFieldRest
     = rest:ConstantDeclaratorsRest SEMI
-    { return { node: 'FieldDeclaration', fragments: rest }; }
+    { return { node: 'FieldDeclaration', fragments: rest, location: location() }; }
     / InterfaceMethodDeclaratorRest
 
 InterfaceMethodDeclaratorRest
@@ -810,7 +811,8 @@ LocalVariableDeclarationStatement
         node:        'VariableDeclarationStatement',
         fragments:    decls,
         modifiers:    modifiers,
-        type:         type
+        type:         type,
+        location: location()
       };
     }
 
@@ -911,7 +913,8 @@ Statement
       return { 
         node:      'AssertStatement', 
         expression: expr,
-        message:    extractOptional(message, 1)
+        message:    extractOptional(message, 1),
+        location: location()
       }; 
     }
     / IF expr:ParExpression then:Statement alt:(ELSE Statement)?
@@ -920,7 +923,8 @@ Statement
         node:         'IfStatement', 
         elseStatement: extractOptional(alt, 1), 
         thenStatement: then,
-        expression:    expr.expression,   
+        expression:    expr.expression,
+        location: location()   
       }; 
     }
     / FOR LPAR init:ForInit? SEMI expr:Expression? SEMI up:ForUpdate? RPAR body:Statement
@@ -930,7 +934,8 @@ Statement
         initializers: optionalList(init),
         expression:   expr,
         updaters:     optionalList(up),
-        body:         body
+        body:         body,
+        location: location()
       };
     }
     / FOR LPAR param:FormalParameter COLON expr:Expression RPAR statement:Statement
@@ -939,7 +944,8 @@ Statement
         node:      'EnhancedForStatement',
         parameter:  param,
         expression: expr,
-        body:       statement
+        body:       statement,
+        location: location()
       }; 
     }
     / WHILE expr:ParExpression body:Statement
@@ -955,7 +961,8 @@ Statement
       return { 
         node:      'DoStatement', 
         expression: expr.expression, 
-        body:       statement 
+        body:       statement,
+        location: location()
       };  
     }
     / TRY LPAR first:Resource rest:(SEMI Resource)* SEMI? RPAR 
@@ -964,7 +971,8 @@ Statement
       return mergeProps(makeCatchFinally(cat, fin), {
         node:        'TryStatement',
         body:         body,
-        resources:    buildList(first, rest, 1)
+        resources:    buildList(first, rest, 1),
+        location: location()
       });
     }
     / TRY body:Block 
@@ -974,21 +982,22 @@ Statement
       return mergeProps(rest, {
         node:        'TryStatement',
         body:         body,
-        resources:    []
+        resources:    [],
+        location: location()
       });
     }
     / SWITCH expr:ParExpression LWING cases:SwitchBlockStatementGroups RWING
-    { return { node: 'SwitchStatement', statements: cases, expression: expr.expression }; }
+    { return { node: 'SwitchStatement', statements: cases, expression: expr.expression, location: location() }; }
     / SYNCHRONIZED expr:ParExpression body:Block
     { return { node: 'SynchronizedStatement', expression: expr.expression, body: body } }
     / RETURN expr:Expression? SEMI
-    { return { node: 'ReturnStatement', expression: expr } }
+    { return { node: 'ReturnStatement', expression: expr, location: location() } }
     / THROW expr:Expression SEMI
-    { return { node: 'ThrowStatement', expression: expr }; }
+    { return { node: 'ThrowStatement', expression: expr, location: location() }; }
     / BREAK id:Identifier? SEMI
-    { return { node: 'BreakStatement', label: id }; }
+    { return { node: 'BreakStatement', label: id, location: location() }; }
     / CONTINUE id:Identifier? SEMI
-    { return { node: 'ContinueStatement', label: id }; }
+    { return { node: 'ContinueStatement', label: id, location: location() }; }
     / SEMI
     { return { node: 'EmptyStatement' }; }
     / statement:StatementExpression SEMI
@@ -1020,6 +1029,7 @@ Catch
           modifiers:   modifiers,
           initializer: null,
           varargs:     false,
+          location: location(),
           type:        rest.length ? { 
             node: 'UnionType', 
             types: buildList(first, rest, 1) 
@@ -1038,7 +1048,7 @@ SwitchBlockStatementGroups
 
 SwitchBlockStatementGroup
     = expr:SwitchLabel blocks:BlockStatements
-    { return [{ node: 'SwitchCase', expression: expr }].concat(blocks); }
+    { return [{ node: 'SwitchCase', expression: expr, location: location() }].concat(blocks); }
 
 SwitchLabel
     = CASE expr:ConstantExpression COLON
@@ -1102,7 +1112,8 @@ Expression
         node:         'Assignment',
         operator:      op[0] /* remove ending spaces */,
         leftHandSide:  left,
-        rightHandSide: right
+        rightHandSide: right,
+        location: location()
       };
     } 
     / ConditionalExpression
@@ -1113,7 +1124,8 @@ LambdaExpression
       return {
         node: 'LambdaExpression',
         parameters: [],
-        body: body
+        body: body,
+        location: location()
       }
 
     }
@@ -1139,7 +1151,8 @@ ConditionalExpression
         node:          'ConditionalExpression',
         expression:     expr,
         thenExpression: then,
-        elseExpression: alt
+        elseExpression: alt,
+        location: location()
       };
     }
     / ConditionalOrExpression
@@ -1689,7 +1702,7 @@ SingleElementAnnotation
 
 MarkerAnnotation
     = AT id:QualifiedIdentifier
-    { return { node: 'MarkerAnnotation', typeName: id }; }
+    { return { node: 'MarkerAnnotation', typeName: id, location: location() }; }
 
 ElementValuePairs
     = first:ElementValuePair rest:(COMMA ElementValuePair)*
