@@ -409,7 +409,7 @@
 
   function isKeyword( word ) {
 
-    return keywordMap[word];
+    return Object.hasOwnProperty(keywordMap, word);
 
   }
 
@@ -1763,7 +1763,10 @@ Spacing
 //-------------------------------------------------------------------------
 
 Identifier
-    = !Keyword id:([a-zA-Z_$][a-zA-Z0-9_$]*) Spacing
+    = id:([a-zA-Z_$][a-zA-Z0-9_$]*) Spacing
+    & {
+      return !isKeyword(id[0] + id[1].join(''));
+    }
     { return { identifier: id[0] + id[1].join(''), node: 'SimpleName' }; }
 
 Letter = [a-zA-Z_$] ;
