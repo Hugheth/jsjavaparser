@@ -409,7 +409,7 @@
 
   function isKeyword( word ) {
 
-    return Object.hasOwnProperty(keywordMap, word);
+    return keywordMap.hasOwnProperty(word);
 
   }
 
