@@ -1321,7 +1321,8 @@ QualifiedIdentifierSuffix
       return mergeProps(popQualified(qual), { 
         node:         'MethodInvocation', 
         arguments:     args, 
-        typeArguments: [] 
+        typeArguments: [],
+        location: location() 
       }); 
     }
     / qual:QualifiedIdentifier DOT CLASS 
